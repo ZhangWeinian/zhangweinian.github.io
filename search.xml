@@ -18,4 +18,13 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>totry</title>
+    <url>/2022/11/25/totry/</url>
+    <content><![CDATA[<h2 id="尝试使用hexo写我的第一篇博客"><a href="#尝试使用hexo写我的第一篇博客" class="headerlink" title="尝试使用hexo写我的第一篇博客"></a>尝试使用<code>hexo</code>写我的第一篇博客</h2><p>这是水的内容</p>
+]]></content>
+      <tags>
+        <tag>first</tag>
+      </tags>
+  </entry>
 </search>
