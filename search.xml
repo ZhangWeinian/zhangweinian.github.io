@@ -16,31 +16,4 @@
         <tag>none</tag>
       </tags>
   </entry>
-  <entry>
-    <title>牛顿法、不动点迭代法寻根</title>
-    <url>/2022/11/25/%E7%89%9B%E9%A1%BF%E6%B3%95%E3%80%81%E4%B8%8D%E5%8A%A8%E7%82%B9%E8%BF%AD%E4%BB%A3%E6%B3%95%E5%AF%BB%E6%A0%B9/</url>
-    <content><![CDATA[<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><h3 id="牛顿法算法原理"><a href="#牛顿法算法原理" class="headerlink" title="牛顿法算法原理"></a>牛顿法算法原理</h3><p>设$r$是方程$f(x)&#x3D;0$的根, 选取$x_0$作为$r$的初始近似值。过点$(x_0,f(x_0))$做曲线$y&#x3D;f(x)$的切线$L$,易得$L$的方程为<br>$$<br>y&#x3D;f(x_0)+f^′(x_0)(x-x_0)<br>$$<br>再求出该切线与$x$轴交点的横坐标<br>$$<br>x_1&#x3D;x_0- \frac{f(x_0)}{f^′(x_0)}<br>$$<br>称$x_1$为$r$的一次近似值。过点$(x_1,f(x_1))$做曲线$y&#x3D;f(x)$的切线，并求该切线与$x$轴交点的横坐标<br>$$<br>x_2&#x3D;x_1- \frac{f(x_1)}{f^′(x_1)}<br>$$<br>称$x_2$为$r$的二次近似值。</p>
-<p>重复以上过程，得$r$的近似值序列${x_n}$，其中<br>$$<br>x_{n+1}&#x3D;x_n- \frac{f(x_n)}{f^′(x_n)}<br>$$<br>称$x_n$为$r$的$n$次近似值，上式称为牛顿迭代公式。</p>
-<p>使用Python可以快速地写出牛顿法的算法框架, 具体内容见第2题。</p>
-<h3 id="不动点迭代方法算法原理"><a href="#不动点迭代方法算法原理" class="headerlink" title="不动点迭代方法算法原理"></a>不动点迭代方法算法原理</h3><p>设$r$是方程$f(x)&#x3D;0$的根, 将方程$ f(x)&#x3D;0 $转换成一个等价的方程$ x&#x3D;φ(x) $，以此构造一个迭代公式：<br>$$<br>x_{n+1}&#x3D;φ(x_n),; n&#x3D;0,1,2…<br>$$<br>当给定一个初始值$ x_0 $后，就可通过迭代公式可以得到一个迭代序列$ {x_n} $。即通过给定初值$x_0$计算$ φ(x_0) $，赋值$ x_1&#x3D;φ(x_0) $，进行下一步迭代；通过$x_1$计算$ φ(x_1) $，赋值$ x_2&#x3D;φ(x_1)$，一直迭代到满足精度要求。</p>
-<p>因为如果迭代序列${x_n}$收敛，那么它将收敛于$ x^∗ $，事实上：<br>$$<br>\lim_{n \to +\infty}x_{n+1}&#x3D;\lim_{n \to +\infty}φ(x_n)&#x3D;φ(\lim_{n \to +\infty}x_{n})<br>$$<br>即满足：<br>$$<br>x^∗&#x3D;φ(x^∗)<br>$$<br>所以极限<br>$$<br>\lim_{n \to +\infty}x_{n+1}<br>$$<br>就是方程的近似解。</p>
-<p>为了使迭代序列${x_n}$收敛，必须构造合适的迭代函数。在第3题中对同一个寻根函数分别使用了5个不同的迭代函数, 其中有些的发散的, 有些事收敛的, 即使同为收敛, 收敛快慢也有所差别, 详细内容请见第3题。</p>
-<h2 id="Python实现牛顿法寻根"><a href="#Python实现牛顿法寻根" class="headerlink" title="Python实现牛顿法寻根"></a>Python实现牛顿法寻根</h2><p>代码如下:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> sys <span class="keyword">as</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义需求解的函数f</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x**<span class="number">3</span> - <span class="number">2</span>*x - <span class="number">5</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算f的导函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">df</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">3</span> * (x**<span class="number">2</span>) - <span class="number">2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 牛顿法寻根</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">myNewtonRaphson</span>(<span class="params">a: <span class="built_in">float</span>, b: <span class="built_in">float</span>, tol=<span class="number">1.0e-9</span></span>):</span><br><span class="line">    <span class="keyword">if</span> f(a) == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> f(b) == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> np.sign(f(a)) == np.sign(f(b)):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;The range entered is unreasonable&#x27;</span>)</span><br><span class="line">        s.exit()</span><br><span class="line"></span><br><span class="line">    x0 = (f(a)+f(b))/<span class="number">2</span>  <span class="comment"># 取x0=(f(a)+f(b))/2为初值</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">abs</span>((f(x0)-<span class="number">0</span>)) &gt; tol:  <span class="comment"># 采用残差来判断误差</span></span><br><span class="line">        x1 = x0-f(x0)/df(x0)  <span class="comment"># 套用迭代公式</span></span><br><span class="line">        x0 = x1</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;The numerical solution of the equation is <span class="subst">&#123;x1:<span class="number">.8</span>f&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    myNewtonRaphson(<span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
-
-<p>运行结果如下:</p>
-<p><img src="https://raw.githubusercontent.com/ZhangWeinian/PicGo/master/img202211251618371.jpg?token=AX6L3RBSMQJRHXFQFMEQOFTDQB5KO"></p>
-<p>寻根误差:</p>
-<p><img src="https://raw.githubusercontent.com/ZhangWeinian/PicGo/master/img202211251621867.jpg?token=AX6L3REBVQ4M2Q2BUK5FIG3DQB5TC"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>相比于不动点迭代法, 牛顿法的优点是计算速度快，方程在单根附近具有较高的收敛速度，且算法逻辑简单。它还可以用于求代数方程的重根、复根。但它有个明显的缺点, 由于牛顿法是局部收敛的，只有对于足够接近$r$(方程的根)的初值$x_0$才能收敛到我们想要的解, 它的收敛性依赖于初值$x_0$的选取, 同时每一步迭代需要提供导数值$f’(x)$,如果函数$f(x)$比较复杂，致使导数的计算比较困难，那么使用牛顿公式是不方便的。</p>
-<p>对于迭代法，构造合适的迭代函数$φ(x)$至关重要，它影响着迭代数列的收敛性。而且若要使不动点迭代收敛，则要求$φ(x)$在区间$[a,b]$上的函数值也在此区间内，因此对初值的要求较高，需要提供较为近似的初始值$x_0$.大多数情况下需要考虑迭代法的局部收敛性，在方程根的附近取初值。</p>
-<p>实际应用中, 两种方法是有着相同之处的。</p>
-<p>事实上, 为了利用不动点迭代法求解函数零点，我们需要对$f(x)&#x3D;0$做一定的变形，得到$x&#x3D;φ(x)$的形式。</p>
-<p>当然我们可以简单变形为$x&#x3D;x+f(x)$，但是这么做不一定能保证不动点迭代收敛定理中的导数条件<br>$$<br>|[x+f(x)]′|&#x3D;|1+f′(x)|⩽k&lt;1<br>$$<br>成立。</p>
-<p>一个简单的改进是$\displaystyle x&#x3D;x−</p>
-]]></content>
-      <tags>
-        <tag>数值分析</tag>
-      </tags>
-  </entry>
 </search>
